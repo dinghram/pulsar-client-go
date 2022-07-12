@@ -50,6 +50,7 @@ type TLSOptions struct {
 	TrustCertsFilePath      string
 	AllowInsecureConnection bool
 	ValidateHostname        bool
+	ServerName              string
 }
 
 var (
@@ -979,7 +980,12 @@ func (c *connection) getTLSConfig() (*tls.Config, error) {
 	}
 
 	if c.tlsOptions.ValidateHostname {
-		tlsConfig.ServerName = c.physicalAddr.Hostname()
+		if c.tlsOptions.ServerName != "" {
+			tlsConfig.ServerName = c.tlsOptions.ServerName
+		} else {
+			tlsConfig.ServerName = c.physicalAddr.Hostname()
+		}
+		c.log.Infof("getTLSConfig(): setting tlsConfig.ServerName = %+v", tlsConfig.ServerName)
 	}
 
 	cert, err := c.auth.GetTLSCertificate()
