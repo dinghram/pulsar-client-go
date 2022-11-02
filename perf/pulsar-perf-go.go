@@ -67,6 +67,7 @@ func NewClient() (pulsar.Client, error) {
 		clientOpts.Authentication = pulsar.NewAuthenticationToken(string(tokenBytes))
 	} else if clientArgs.TLSServerCertFile != "" && clientArgs.TLSServerKeyFile != "" {
 		clientOpts.Authentication = pulsar.NewAuthenticationTLS(clientArgs.TLSServerCertFile, clientArgs.TLSServerKeyFile)
+		clientOpts.TLSValidateHostname = true
 	}
 
 	if clientArgs.TLSTrustCertFile != "" {
