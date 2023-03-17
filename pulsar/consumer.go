@@ -198,6 +198,10 @@ type ConsumerOptions struct {
 	// error information of the Ack method only contains errors that may occur in the Go SDK's own processing.
 	// Default: false
 	AckWithResponse bool
+
+	// SubscriptionMode specifies the subscription mode to be used when subscribing to a topic.
+	// Default is `Durable`
+	SubscriptionMode SubscriptionMode
 }
 
 // Consumer is an interface that abstracts behavior of Pulsar's consumer

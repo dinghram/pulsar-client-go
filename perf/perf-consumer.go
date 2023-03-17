@@ -34,6 +34,8 @@ type ConsumeArgs struct {
 	Topic             string
 	SubscriptionName  string
 	ReceiverQueueSize int
+	SubscriptionMode  pulsar.SubscriptionMode
+	SubscriptionType  pulsar.SubscriptionType
 }
 
 func newConsumerCommand() *cobra.Command {
@@ -55,6 +57,8 @@ func newConsumerCommand() *cobra.Command {
 	flags := cmd.Flags()
 	flags.StringVarP(&consumeArgs.SubscriptionName, "subscription", "s", "sub", "Subscription name")
 	flags.IntVarP(&consumeArgs.ReceiverQueueSize, "receiver-queue-size", "r", 1000, "Receiver queue size")
+	flags.IntVarP((*int)(&consumeArgs.SubscriptionMode), "subscription-mode", "m", int(pulsar.Durable), "Subscription mode")
+	flags.IntVarP((*int)(&consumeArgs.SubscriptionType), "subscription-type", "t", int(pulsar.Exclusive), "Subscription type")
 
 	return cmd
 }
@@ -76,6 +80,8 @@ func consume(consumeArgs *ConsumeArgs, stop <-chan struct{}) {
 	consumer, err := client.Subscribe(pulsar.ConsumerOptions{
 		Topic:            consumeArgs.Topic,
 		SubscriptionName: consumeArgs.SubscriptionName,
+		Type:             consumeArgs.SubscriptionType,
+		SubscriptionMode: consumeArgs.SubscriptionMode,
 	})
 
 	if err != nil {
